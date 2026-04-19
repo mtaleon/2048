@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="2048 Game - Slide and combine tiles to reach 2048!">
+  <meta name="theme-color" content="#776e65">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <title>2048 Game</title>
+
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="platforms/web-dom/styles.css">
+</head>
+<body>
+  <!-- Header with title and scores -->
+  <div class="header">
+    <h1 class="title">2048</h1>
+    <div class="scores">
+      <div class="score-container">
+        <div class="score-label">Score</div>
+        <div id="score" class="score">0</div>
+      </div>
+      <div class="score-container">
+        <div class="score-label">Best</div>
+        <div id="best-score" class="score">0</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Game container (board rendered here) -->
+  <div id="game-container"></div>
+
+  <!-- Controls -->
+  <div class="controls">
+    <button id="new-game-btn" class="btn">New Game</button>
+    <button id="mute-btn" class="btn">🔊</button>
+  </div>
+
+  <!-- Win Modal -->
+  <div id="win-modal" class="modal">
+    <div class="modal-content">
+      <h2>🎉 You Win!</h2>
+      <p>You reached 2048!</p>
+      <div class="final-score">0</div>
+      <p>in <span class="final-moves">0</span> moves</p>
+      <div class="modal-buttons">
+        <button class="continue-btn btn">Keep Playing</button>
+        <button class="new-game-btn btn">New Game</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lose Modal -->
+  <div id="lose-modal" class="modal">
+    <div class="modal-content">
+      <h2>Game Over</h2>
+      <p>No more moves!</p>
+      <div class="final-score">0</div>
+      <div class="modal-buttons">
+        <button class="try-again-btn btn">Try Again</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Load Capacitor for Android (fails gracefully on web) -->
+  <script>
+    const capacitorScript = document.createElement('script');
+    capacitorScript.src = 'capacitor.js';
+    capacitorScript.onerror = () => {
+      console.log('Running in Web mode');
+    };
+    document.head.appendChild(capacitorScript);
+  </script>
+
+  <!-- Load game -->
+  <script type="module" src="app.js"></script>
+
+  <!-- Register service worker -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js')
+          .then(reg => console.log('Service Worker registered'))
+          .catch(err => console.warn('Service Worker registration failed:', err));
+      });
+    }
+  </script>
+</body>
+</html>

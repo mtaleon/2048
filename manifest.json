@@ -1,0 +1,24 @@
+{
+  "name": "2048 Game",
+  "short_name": "2048",
+  "description": "Slide and combine tiles to reach 2048! A puzzle game PWA.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#776e65",
+  "background_color": "#faf8ef",
+  "categories": ["games", "puzzle"],
+  "lang": "en",
+  "dir": "ltr",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [],
+  "prefer_related_applications": false
+}

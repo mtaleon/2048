@@ -1,0 +1,12 @@
+{
+  "appId": "com.octile.twentyfortyeight",
+  "appName": "2048",
+  "webDir": "www",
+  "bundledWebRuntime": false,
+  "android": {
+    "buildOptions": {
+      "keystorePath": "",
+      "keystoreAlias": ""
+    }
+  }
+}

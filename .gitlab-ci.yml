@@ -1,0 +1,40 @@
+# GitLab CI/CD for Pages Deployment (Mode A)
+# This file is mirrored from GitHub and builds the project on GitLab
+
+image: node:22-alpine
+
+# Cache node_modules for faster builds
+cache:
+  paths:
+    - node_modules/
+
+stages:
+  - deploy
+
+pages:
+  stage: deploy
+  script:
+    - echo "Installing dependencies..."
+    - npm ci --prefer-offline --no-audit
+
+    - echo "Building project..."
+    - npm run build
+
+    - echo "Moving www to public for GitLab Pages..."
+    - mv www public
+
+    - echo "Build complete! GitLab Pages will serve from public/"
+    - ls -la public/
+
+  artifacts:
+    paths:
+      - public
+    expire_in: 30 days
+
+  only:
+    - main
+
+  # Optional: deploy to a specific environment
+  environment:
+    name: production
+    url: https://$CI_PROJECT_NAMESPACE.gitlab.io/$CI_PROJECT_NAME
