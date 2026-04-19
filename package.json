@@ -7,7 +7,7 @@
   "scripts": {
     "test": "node --test core/**/*.test.js",
     "dev": "python3 -m http.server 8000",
-    "build": "mkdir -p www && cp index.html app.js favicon.svg manifest.json sw.js www/ && cp -r core platform platforms www/",
+    "build": "mkdir -p www && cp index.html app.js favicon.svg icon-192.png icon-512.png manifest.json sw.js www/ && cp -r core platform platforms www/",
     "android:prepare": "npm run build && npx cap sync android",
     "android:open": "npx cap open android",
     "android:build": "npm run android:prepare && cd android && ./gradlew assembleDebug",

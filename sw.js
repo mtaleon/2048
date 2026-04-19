@@ -8,6 +8,8 @@ const STATIC_ASSETS = [
   'index.html',
   'app.js',
   'favicon.svg',
+  'icon-192.png',
+  'icon-512.png',
   'manifest.json',
   'core/constants.js',
   'core/events.js',

@@ -1,6 +1,7 @@
 # Build outputs
 www/
 dist/
+icon-1024.png
 
 # Dependencies
 node_modules/

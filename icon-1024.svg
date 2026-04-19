@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <!-- Background -->
+  <rect width="1024" height="1024" fill="#edc22e" rx="80"/>
+
+  <!-- 2048 text -->
+  <text x="512" y="680" font-family="Arial, sans-serif" font-size="420" font-weight="bold" fill="#f9f6f2" text-anchor="middle">2048</text>
+</svg>
