@@ -1,10 +1,119 @@
+
 # CLAUDE.md
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+---
+
 ## Project Overview
 
-**2048 Game** - A sliding tile puzzle game built with a platform-agnostic architecture. The game runs on web browsers, Android (via Capacitor), and terminal/console, with support for keyboard, touch swipe, and gamepad input. Features responsive design and works offline as a Progressive Web App (PWA).
+**2048** is a classic sliding tile puzzle game implemented with a platform-agnostic architecture.
+
+Within the **Octile Universe**, this project serves as a **free entry puzzle**, designed to:
+- provide immediate, intuitive gameplay without tutorial friction
+- introduce calm, logic-driven thinking
+- act as a low-friction gateway into deeper Octile experiences
+
+This game is intentionally **not positioned as a competitive or score-driven product**.
+
+---
+
+## Octile Universe Context (Important)
+
+This 2048 implementation is a **free entry game** within the Octile Universe.
+
+Design intent:
+- calm
+- reflective
+- non-competitive
+- respectful of player intelligence
+
+The purpose is NOT:
+- to promote high scores
+- to encourage speed or performance comparison
+- to create tension or urgency
+
+The game should feel **complete**, but intentionally **not as deep or long-term** as Octile.
+
+---
+
+## Explicit Non‑Goals (Do NOT Add)
+
+The following are intentionally avoided:
+
+- Leaderboards or online rankings
+- Time pressure mechanics
+- Competitive framing (“best score”, “beat your record” emphasis)
+- Daily challenges, streaks, or meta progression
+- Gamified rewards or hype‑driven feedback
+- Aggressive animations or celebratory effects
+
+If a feature increases urgency, comparison, or excitement,
+it likely does NOT belong in this project.
+
+---
+
+## UI / Tone Alignment (Octile Universe)
+
+### Tone Guidelines
+
+UI copy and feedback must be:
+- calm
+- neutral
+- restrained
+- informational
+
+Avoid:
+- exclamation marks
+- “Game Over” dramatization
+- praise‑heavy or failure‑heavy messaging
+- imperative calls to action (“Try Again”, “Beat your best”)
+
+Preferred framing:
+- neutral state descriptions
+- quiet transitions
+- respectful closure
+
+Example:
+❌ “Game Over! No more moves!”
+✅ “No moves available.”
+
+❌ “Try Again”
+✅ “New game”
+
+---
+
+## Score & Statistics Philosophy
+
+Scores and statistics exist as **informational feedback only**.
+
+Rules:
+- Score must not dominate the visual hierarchy
+- “Best” score should be de‑emphasized or hidden by default
+- Numbers should support reflection, not competition
+
+**Key principle:** Scores exist for reflection, not comparison.
+
+This game should feel like **playing with numbers**, not chasing them.
+
+---
+
+## Cross‑Promotion Rules (2048 → Octile)
+
+This project may reference Octile in a **single, soft, non‑intrusive location**.
+
+Rules:
+- At most ONE entry point
+- Only after a satisfaction or completion state
+- Not mid‑play
+- No buttons, no calls to action
+
+Allowed phrasing example:
+> “This type of puzzle can be explored more deeply in Octile.”
+
+The goal is awareness, not conversion.
+
+
 
 ## Core Architecture: 3-Layer Design
 
@@ -465,3 +574,8 @@ adb logcat | grep -i capacitor
 # Chrome DevTools for WebView
 chrome://inspect
 ```
+
+## Score & Statistics Philosophy
+Scores exist for reflection, not comparison.
+- Score must not dominate the visual hierarchy
+- “Best” is hidden by default

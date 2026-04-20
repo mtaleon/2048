@@ -10,36 +10,40 @@ export const GAME_CONFIG = {
   spawnProbability2: 0.9, // 90% chance of spawning 2 (vs 4)
 };
 
+// Octile Universe: Low-saturation blue-gray progression
+// NOT pure grayscale - maintains visual hierarchy for playability
+// Cool tones replace warm orange/gold from classic 2048
 export const TILE_COLORS = {
-  2: '#eee4da',
-  4: '#ede0c8',
-  8: '#f2b179',
-  16: '#f59563',
-  32: '#f67c5f',
-  64: '#f65e3b',
-  128: '#edcf72',
-  256: '#edcc61',
-  512: '#edc850',
-  1024: '#edc53f',
-  2048: '#edc22e',
-  4096: '#3c3a32',
-  8192: '#3c3a32',
+  2: '#2f3238',    /* Dark blue-gray (was #eee4da cream) */
+  4: '#353a42',    /* Slightly lighter (was #ede0c8 cream) */
+  8: '#3c424c',    /* Medium (was #f2b179 orange) */
+  16: '#454c58',   /* Mid-tone (was #f59563 bright orange) */
+  32: '#4f5866',   /* Warmer mid (was #f67c5f red-orange) */
+  64: '#586273',   /* Light-mid (was #f65e3b red) */
+  128: '#6a7382',  /* Cool light (was #edcf72 gold) */
+  256: '#7c8491',  /* Lighter (was #edcc61 bright gold) */
+  512: '#8e95a0',  /* Light gray-blue (was #edc850 yellow-gold) */
+  1024: '#a1a7b0', /* Very light (was #edc53f bright yellow) */
+  2048: '#b4b8bf', /* Lightest (was #edc22e bright yellow) */
+  4096: '#2a2a2a', /* Dark (was #3c3a32 dark brown) */
+  8192: '#2a2a2a', /* Dark (was #3c3a32 dark brown) */
 };
 
+// Octile Universe: Text colors adjusted for low-saturation backgrounds
 export const TILE_TEXT_COLORS = {
-  2: '#776e65',
-  4: '#776e65',
-  8: '#f9f6f2',
-  16: '#f9f6f2',
-  32: '#f9f6f2',
-  64: '#f9f6f2',
-  128: '#f9f6f2',
-  256: '#f9f6f2',
-  512: '#f9f6f2',
-  1024: '#f9f6f2',
-  2048: '#f9f6f2',
-  4096: '#f9f6f2',
-  8192: '#f9f6f2',
+  2: '#8e95a0',      /* Light blue-gray text on dark tiles */
+  4: '#99a0a8',
+  8: '#a4abb2',
+  16: '#b0b6bc',
+  32: '#bcc1c6',
+  64: '#c8ccd0',
+  128: '#d4d7da',
+  256: '#e0e2e4',
+  512: '#ecedef',
+  1024: '#f8f9f9',
+  2048: '#ffffff',   /* White on lightest tile */
+  4096: '#b4b8bf',   /* Light on dark super tiles */
+  8192: '#b4b8bf',
 };
 
 export const DIRECTIONS = {

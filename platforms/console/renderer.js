@@ -225,12 +225,12 @@ ${COLORS.dim}Controls:${COLORS.reset}
   }
 
   /**
-   * Show game over message
+   * Show game over message - Octile Universe: neutral state descriptions, no celebration/drama
    */
   showGameOver(won) {
     const message = won
-      ? `\n${COLORS.title}${COLORS.bold}🎉 You Win! You reached 2048! 🎉${COLORS.reset}\n`
-      : `\n${COLORS.dim}Game Over! No more moves available.${COLORS.reset}\n`;
+      ? `\n${COLORS.title}2048 reached. You may continue playing.${COLORS.reset}\n`
+      : `\n${COLORS.dim}No moves available. Board is complete.${COLORS.reset}\n`;
     console.log(message);
   }
 

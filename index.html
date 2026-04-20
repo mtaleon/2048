@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="description" content="2048 Game - Slide and combine tiles to reach 2048!">
+  <meta name="description" content="2048 - A sliding tile puzzle game">
   <meta name="theme-color" content="#776e65">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -35,32 +35,32 @@
 
   <!-- Controls -->
   <div class="controls">
-    <button id="new-game-btn" class="btn">New Game</button>
+    <button id="new-game-btn" class="btn">New game</button>
     <button id="mute-btn" class="btn">🔊</button>
   </div>
 
-  <!-- Win Modal -->
+  <!-- Win Modal - Octile Universe: neutral state description, no celebration -->
   <div id="win-modal" class="modal">
     <div class="modal-content">
-      <h2>🎉 You Win!</h2>
-      <p>You reached 2048!</p>
+      <h2>2048 reached</h2>
+      <p>You may continue playing.</p>
       <div class="final-score">0</div>
       <p>in <span class="final-moves">0</span> moves</p>
       <div class="modal-buttons">
-        <button class="continue-btn btn">Keep Playing</button>
-        <button class="new-game-btn btn">New Game</button>
+        <button class="continue-btn btn">Keep playing</button>
+        <button class="new-game-btn btn">New game</button>
       </div>
     </div>
   </div>
 
-  <!-- Lose Modal -->
+  <!-- Lose Modal - Octile Universe: neutral state description, no failure narrative -->
   <div id="lose-modal" class="modal">
     <div class="modal-content">
-      <h2>Game Over</h2>
-      <p>No more moves!</p>
+      <h2>No moves available</h2>
+      <p>Board is complete.</p>
       <div class="final-score">0</div>
       <div class="modal-buttons">
-        <button class="try-again-btn btn">Try Again</button>
+        <button class="try-again-btn btn">New game</button>
       </div>
     </div>
   </div>

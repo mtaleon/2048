@@ -5,10 +5,10 @@
   --tile-size: 100px;
   --gap: 15px;
   --animation-duration: 200ms;
-  --bg-color: #faf8ef;
-  --grid-bg: #bbada0;
-  --text-dark: #776e65;
-  --text-light: #f9f6f2;
+  --bg-color: #1a1a1a;       /* Dark background (was #faf8ef bright米白) - Octile Universe */
+  --grid-bg: #2a2a2a;        /* Darker grid (was #bbada0 tan) - Octile Universe */
+  --text-dark: #cccccc;      /* Light text for dark bg (was #776e65 dark brown) - Octile Universe */
+  --text-light: #f9f6f2;     /* Keep for tiles */
 }
 
 * {
@@ -51,24 +51,29 @@ body {
 }
 
 .score-container {
-  background: var(--grid-bg);
-  padding: 10px 20px;
+  background: #2a2a2a;       /* Dark (was var(--grid-bg)) - Octile Universe de-emphasis */
+  padding: 8px 16px;         /* Smaller (was 10px 20px) - de-emphasize scores */
   border-radius: 3px;
   text-align: center;
   min-width: 70px;
 }
 
 .score-label {
-  font-size: 13px;
-  color: #eee4da;
+  font-size: 11px;           /* Smaller (was 13px) - de-emphasize */
+  color: #999999;            /* Muted (was #eee4da) */
   text-transform: uppercase;
   margin-bottom: 5px;
 }
 
 .score {
-  font-size: 25px;
+  font-size: 18px;           /* Smaller (was 25px) - de-emphasize */
   font-weight: bold;
-  color: white;
+  color: #cccccc;            /* Neutral (was white) - Octile Universe */
+}
+
+/* Hide "Best" score by default - Octile Universe: scores exist for reflection, not comparison */
+#best-score {
+  display: none;
 }
 
 /* Game Container */
@@ -170,8 +175,8 @@ body {
 
 .btn {
   padding: 10px 20px;
-  background: #8f7a66;
-  color: #f9f6f2;
+  background: #3a3a3a;       /* Muted dark gray (was #8f7a66 tan) - Octile Universe */
+  color: #cccccc;            /* Neutral light (was #f9f6f2 cream) - Octile Universe */
   border: none;
   border-radius: 3px;
   font-size: 18px;
@@ -181,14 +186,14 @@ body {
 }
 
 .btn:hover {
-  background: #9f8a76;
+  background: #4a4a4a;       /* Lighter on hover (was #9f8a76) */
 }
 
 .btn:active {
-  background: #7f6a56;
+  background: #2a2a2a;       /* Darker on active (was #7f6a56) */
 }
 
-/* Modals */
+/* Modals - Octile Universe: calm, dark, no dramatic effects */
 .modal {
   display: none;
   position: fixed;
@@ -196,7 +201,7 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(255, 255, 255, 0.5);
+  background: rgba(0, 0, 0, 0.8);  /* Dark overlay (was rgba(255,255,255,0.5)) */
   backdrop-filter: blur(5px);
   align-items: center;
   justify-content: center;
@@ -208,32 +213,35 @@ body {
 }
 
 .modal-content {
-  background: white;
+  background: #2a2a2a;           /* Dark modal (was white) - Octile Universe */
+  color: #cccccc;                /* Light text - Octile Universe */
   padding: 40px;
   border-radius: 10px;
   text-align: center;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); /* Subtle shadow */
   max-width: 400px;
   width: 90%;
+  /* NO animation properties - no scale-in, bounce, or dramatic effects */
+  /* These work for Map game but make 2048 too "gamey" */
 }
 
 .modal-content h2 {
-  font-size: 36px;
+  font-size: 28px;               /* Smaller (was 36px) - de-emphasize */
   margin: 0 0 20px 0;
-  color: var(--text-dark);
+  color: #cccccc;                /* Neutral (was var(--text-dark)) - Octile Universe */
 }
 
 .modal-content p {
   font-size: 18px;
   margin: 10px 0;
-  color: var(--text-dark);
+  color: #999999;                /* Muted (was var(--text-dark)) - Octile Universe */
 }
 
 .modal-content .final-score,
 .modal-content .final-moves {
-  font-size: 48px;
+  font-size: 36px;               /* Smaller (was 48px) - de-emphasize scores */
   font-weight: bold;
-  color: #8f7a66;
+  color: #999999;                /* Muted (was #8f7a66 tan) - Octile Universe */
   margin: 10px 0;
 }
 
