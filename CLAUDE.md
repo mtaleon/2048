@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**2048 Game** - A sliding tile puzzle game built with a platform-agnostic architecture. The game runs on web browsers and Android (via Capacitor), with support for keyboard, touch swipe, and gamepad input. Features responsive design and works offline as a Progressive Web App (PWA).
+**2048 Game** - A sliding tile puzzle game built with a platform-agnostic architecture. The game runs on web browsers, Android (via Capacitor), and terminal/console, with support for keyboard, touch swipe, and gamepad input. Features responsive design and works offline as a Progressive Web App (PWA).
 
 ## Core Architecture: 3-Layer Design
 
@@ -30,12 +30,18 @@ Interfaces that core logic calls but doesn't implement:
 ### Layer 3: Platform Implementations (`platforms/`)
 Concrete implementations for specific platforms. **Easy to swap or add new platforms** (Canvas, Terminal, Native, etc.).
 
-**Current: Web DOM Platform** (`platforms/web-dom/`)
+**Web DOM Platform** (`platforms/web-dom/`)
 - **`renderer.js`**: CSS Grid + CSS transforms for tiles, responsive sizing, animation from prevX/prevY → x/y
 - **`input.js`**: Unified keyboard (Arrow keys, WASD) and touch swipe detection, modal-aware input blocking
 - **`audio.js`**: Web Audio API synthesis for sound effects, persists mute state to localStorage
 - **`ui.js`**: Win/lose modals, controls, mute button
 - **`styles.css`**: Responsive CSS Grid, tile animations (spawn, merge, move), mobile-friendly
+
+**Console Platform** (`platforms/console/`)
+- **`renderer.js`**: Terminal rendering with pretty Unicode borders (╔═╗║╚╝╬), ANSI RGB colors matching web tiles
+- **`input.js`**: Raw keyboard input (Arrow keys, WASD, R for restart, Q for quit)
+- **`audio.js`**: Stub implementation (no sound in terminal)
+- **Entry**: `console-app.js` - Node.js entry point with FileStorage adapter
 
 **Critical: Event Flow**
 ```
@@ -49,6 +55,8 @@ Example: User presses arrow key → `input.js` calls `game.move()` → Core vali
 ### Development
 ```bash
 npm test                    # Run all core tests (Node.js native test runner)
+npm run console            # Play in terminal (pretty Unicode borders!)
+npm run play               # Alias for console
 npm run dev                 # Start local web server on port 8000
 npm run build              # Build for production (copies to www/)
 ```
