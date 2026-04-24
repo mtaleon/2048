@@ -5,10 +5,11 @@
   --tile-size: 100px;
   --gap: 15px;
   --animation-duration: 200ms;
-  --bg-color: #1a1a1a;       /* Dark background (was #faf8ef bright米白) - Octile Universe */
-  --grid-bg: #2a2a2a;        /* Darker grid (was #bbada0 tan) - Octile Universe */
-  --text-dark: #cccccc;      /* Light text for dark bg (was #776e65 dark brown) - Octile Universe */
-  --text-light: #f9f6f2;     /* Keep for tiles */
+  --bg-color: #1a1a1a;
+  --grid-bg: #2f3237;
+  --text-dark: #d1d5db;
+  --text-light: #f9f6f2;
+  --accent: rgba(140, 180, 255, 0.15);
 }
 
 * {
@@ -19,7 +20,7 @@ body {
   font-family: 'Clear Sans', 'Helvetica Neue', Arial, sans-serif;
   margin: 0;
   padding: 20px;
-  background: var(--bg-color);
+  background: radial-gradient(circle at top, #2a2a2a, #1a1a1a);
   color: var(--text-dark);
   display: flex;
   flex-direction: column;
@@ -51,24 +52,24 @@ body {
 }
 
 .score-container {
-  background: #2a2a2a;       /* Dark (was var(--grid-bg)) - Octile Universe de-emphasis */
-  padding: 8px 16px;         /* Smaller (was 10px 20px) - de-emphasize scores */
+  background: #35393e;
+  padding: 8px 16px;
   border-radius: 3px;
   text-align: center;
   min-width: 70px;
 }
 
 .score-label {
-  font-size: 11px;           /* Smaller (was 13px) - de-emphasize */
-  color: #999999;            /* Muted (was #eee4da) */
+  font-size: 11px;
+  color: #9ca3af;
   text-transform: uppercase;
   margin-bottom: 5px;
 }
 
 .score {
-  font-size: 18px;           /* Smaller (was 25px) - de-emphasize */
+  font-size: 18px;
   font-weight: bold;
-  color: #cccccc;            /* Neutral (was white) - Octile Universe */
+  color: #d1d5db;
 }
 
 /* Hide "Best" score by default - Octile Universe: scores exist for reflection, not comparison */
@@ -90,6 +91,9 @@ body {
   background: var(--grid-bg);
   border-radius: 6px;
   padding: var(--gap);
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.35),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.04);
   display: grid;
   grid-template-columns: repeat(4, var(--tile-size));
   grid-template-rows: repeat(4, var(--tile-size));
@@ -98,7 +102,7 @@ body {
 
 /* Background Grid Cells */
 .grid-cell {
-  background: rgba(238, 228, 218, 0.35);
+  background: #3a3f46;
   border-radius: 3px;
 }
 
@@ -129,6 +133,7 @@ body {
 /* Spawn Animation */
 .tile-new {
   animation: spawn 200ms ease-in-out;
+  box-shadow: 0 0 10px var(--accent);
 }
 
 @keyframes spawn {
@@ -149,6 +154,7 @@ body {
 /* Merge Animation */
 .tile-merged {
   animation: merge 300ms ease-in-out;
+  box-shadow: 0 0 15px var(--accent);
 }
 
 @keyframes merge {
@@ -175,8 +181,8 @@ body {
 
 .btn {
   padding: 10px 20px;
-  background: #3a3a3a;       /* Muted dark gray (was #8f7a66 tan) - Octile Universe */
-  color: #cccccc;            /* Neutral light (was #f9f6f2 cream) - Octile Universe */
+  background: #3f444a;
+  color: #e5e7eb;
   border: none;
   border-radius: 3px;
   font-size: 18px;
@@ -186,11 +192,11 @@ body {
 }
 
 .btn:hover {
-  background: #4a4a4a;       /* Lighter on hover (was #9f8a76) */
+  background: #4a5057;
 }
 
 .btn:active {
-  background: #2a2a2a;       /* Darker on active (was #7f6a56) */
+  background: #353a40;
 }
 
 /* Modals - Octile Universe: calm, dark, no dramatic effects */
@@ -213,35 +219,33 @@ body {
 }
 
 .modal-content {
-  background: #2a2a2a;           /* Dark modal (was white) - Octile Universe */
-  color: #cccccc;                /* Light text - Octile Universe */
+  background: #2f3237;
+  color: #d1d5db;
   padding: 40px;
   border-radius: 10px;
   text-align: center;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); /* Subtle shadow */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
   max-width: 400px;
   width: 90%;
-  /* NO animation properties - no scale-in, bounce, or dramatic effects */
-  /* These work for Map game but make 2048 too "gamey" */
 }
 
 .modal-content h2 {
-  font-size: 28px;               /* Smaller (was 36px) - de-emphasize */
+  font-size: 28px;
   margin: 0 0 20px 0;
-  color: #cccccc;                /* Neutral (was var(--text-dark)) - Octile Universe */
+  color: #d1d5db;
 }
 
 .modal-content p {
   font-size: 18px;
   margin: 10px 0;
-  color: #999999;                /* Muted (was var(--text-dark)) - Octile Universe */
+  color: #9ca3af;
 }
 
 .modal-content .final-score,
 .modal-content .final-moves {
-  font-size: 36px;               /* Smaller (was 48px) - de-emphasize scores */
+  font-size: 36px;
   font-weight: bold;
-  color: #999999;                /* Muted (was #8f7a66 tan) - Octile Universe */
+  color: #b0b6bc;
   margin: 10px 0;
 }
 
@@ -293,11 +297,11 @@ body {
 /* Touch feedback */
 @media (hover: none) {
   .btn:hover {
-    background: #8f7a66;
+    background: #3f444a;
   }
 
   .btn:active {
-    background: #7f6a56;
+    background: #353a40;
     transform: scale(0.95);
   }
 }
