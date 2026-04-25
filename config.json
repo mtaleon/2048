@@ -1,0 +1,12 @@
+{
+  "features": {
+    "score_submission": true,
+    "ota_updates": true,
+    "admob": true,
+    "interstitial_ads": false
+  },
+  "workerUrl": "https://api.octile.eu.cc",
+  "siteUrl": "https://2048.octile.eu.cc/",
+  "scoreQueueRetryMs": 35000,
+  "debug": false
+}
