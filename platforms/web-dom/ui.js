@@ -3,7 +3,8 @@
  * Handles win/lose modals and game controls
  */
 export class WebDOMUI {
-  constructor() {
+  constructor(eventBus) {
+    this.eventBus = eventBus;
     this.audio = null;
     this.newGameCallback = null;
     this.continueCallback = null;
@@ -74,6 +75,30 @@ export class WebDOMUI {
         });
       }
     }
+
+    // Help modal
+    const helpModal = document.getElementById('help-modal');
+    if (helpModal) {
+      const helpCloseBtn = document.getElementById('help-close');
+      if (helpCloseBtn) {
+        helpCloseBtn.addEventListener('click', () => this.hideHelpModal());
+      }
+    }
+
+    // About modal
+    const aboutModal = document.getElementById('about-modal');
+    if (aboutModal) {
+      const aboutCloseBtn = document.getElementById('about-close');
+      if (aboutCloseBtn) {
+        aboutCloseBtn.addEventListener('click', () => this.hideAboutModal());
+      }
+
+      // Reset analytics button
+      const resetAnalyticsBtn = document.getElementById('reset-analytics-btn');
+      if (resetAnalyticsBtn) {
+        resetAnalyticsBtn.addEventListener('click', () => this.resetAnalytics());
+      }
+    }
   }
 
   /**
@@ -87,6 +112,18 @@ export class WebDOMUI {
       newGameBtn.addEventListener('click', () => {
         if (this.newGameCallback) this.newGameCallback();
       });
+    }
+
+    // Help button
+    const helpBtn = document.getElementById('help-btn');
+    if (helpBtn) {
+      helpBtn.addEventListener('click', () => this.showHelpModal());
+    }
+
+    // About button
+    const aboutBtn = document.getElementById('about-btn');
+    if (aboutBtn) {
+      aboutBtn.addEventListener('click', () => this.showAboutModal());
     }
 
     // Mute button
@@ -122,6 +159,11 @@ export class WebDOMUI {
     }
 
     modal.classList.add('show');
+
+    // Emit events for modal state
+    if (this.eventBus) {
+      this.eventBus.emit('modal:opened', { modal: 'win' });
+    }
     window.dispatchEvent(new CustomEvent('modalShown'));
   }
 
@@ -132,6 +174,11 @@ export class WebDOMUI {
     const modal = document.getElementById('win-modal');
     if (modal) {
       modal.classList.remove('show');
+
+      // Emit events for modal state
+      if (this.eventBus) {
+        this.eventBus.emit('modal:closed', { modal: 'win' });
+      }
       window.dispatchEvent(new CustomEvent('modalHidden'));
     }
   }
@@ -147,6 +194,11 @@ export class WebDOMUI {
     if (scoreEl) scoreEl.textContent = score;
 
     modal.classList.add('show');
+
+    // Emit events for modal state
+    if (this.eventBus) {
+      this.eventBus.emit('modal:opened', { modal: 'lose' });
+    }
     window.dispatchEvent(new CustomEvent('modalShown'));
   }
 
@@ -157,6 +209,11 @@ export class WebDOMUI {
     const modal = document.getElementById('lose-modal');
     if (modal) {
       modal.classList.remove('show');
+
+      // Emit events for modal state
+      if (this.eventBus) {
+        this.eventBus.emit('modal:closed', { modal: 'lose' });
+      }
       window.dispatchEvent(new CustomEvent('modalHidden'));
     }
   }
@@ -169,5 +226,96 @@ export class WebDOMUI {
     if (!muteBtn || !this.audio) return;
 
     muteBtn.textContent = this.audio.isMuted() ? '🔇' : '🔊';
+  }
+
+  /**
+   * Show help modal
+   */
+  showHelpModal() {
+    const modal = document.getElementById('help-modal');
+    if (!modal) return;
+
+    modal.classList.add('show');
+
+    // Emit events for modal state
+    if (this.eventBus) {
+      this.eventBus.emit('modal:opened', { modal: 'help' });
+    }
+    window.dispatchEvent(new CustomEvent('modalShown'));
+  }
+
+  /**
+   * Hide help modal
+   */
+  hideHelpModal() {
+    const modal = document.getElementById('help-modal');
+    if (modal) {
+      modal.classList.remove('show');
+
+      // Emit events for modal state
+      if (this.eventBus) {
+        this.eventBus.emit('modal:closed', { modal: 'help' });
+      }
+      window.dispatchEvent(new CustomEvent('modalHidden'));
+    }
+  }
+
+  /**
+   * Show about modal
+   */
+  showAboutModal() {
+    const modal = document.getElementById('about-modal');
+    if (!modal) return;
+
+    // Update version in about modal (will be set by app.js during initialization)
+    const versionEl = document.getElementById('about-version');
+    if (versionEl && window.otaVersion) {
+      versionEl.textContent = `Version ${window.otaVersion}`;
+    }
+
+    modal.classList.add('show');
+
+    // Emit events for modal state
+    if (this.eventBus) {
+      this.eventBus.emit('modal:opened', { modal: 'about' });
+    }
+    window.dispatchEvent(new CustomEvent('modalShown'));
+  }
+
+  /**
+   * Hide about modal
+   */
+  hideAboutModal() {
+    const modal = document.getElementById('about-modal');
+    if (modal) {
+      modal.classList.remove('show');
+
+      // Emit events for modal state
+      if (this.eventBus) {
+        this.eventBus.emit('modal:closed', { modal: 'about' });
+      }
+      window.dispatchEvent(new CustomEvent('modalHidden'));
+    }
+  }
+
+  /**
+   * Reset analytics ID (clears UUID and score queue)
+   */
+  resetAnalytics() {
+    const confirmed = confirm(
+      'This will reset your anonymous analytics identifier and clear queued data. Continue?'
+    );
+
+    if (confirmed) {
+      localStorage.removeItem('octile_cookie_uuid');
+      localStorage.removeItem('2048_score_queue_v1');
+
+      // Optional: Clear OTA dismissed flags
+      Object.keys(localStorage)
+        .filter(key => key.startsWith('update_dismissed_v'))
+        .forEach(key => localStorage.removeItem(key));
+
+      alert('Analytics data cleared. A new anonymous ID will be generated on next game completion.');
+    }
   }
 }

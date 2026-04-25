@@ -10,6 +10,7 @@
   --text-dark: #d1d5db;
   --text-light: #f9f6f2;
   --accent: rgba(140, 180, 255, 0.15);
+  --ad-safe-bottom: 0px;     /* Dynamic padding for AdMob banner */
 }
 
 * {
@@ -20,6 +21,7 @@ body {
   font-family: 'Clear Sans', 'Helvetica Neue', Arial, sans-serif;
   margin: 0;
   padding: 20px;
+  padding-bottom: calc(20px + var(--ad-safe-bottom));
   background: radial-gradient(circle at top, #2a2a2a, #1a1a1a);
   color: var(--text-dark);
   display: flex;
@@ -28,6 +30,7 @@ body {
   justify-content: center;
   min-height: 100vh;
   user-select: none;
+  transition: padding-bottom 0.3s ease;
 }
 
 .header {
@@ -72,9 +75,9 @@ body {
   color: #d1d5db;
 }
 
-/* Hide "Best" score by default - Octile Universe: scores exist for reflection, not comparison */
+/* Best score visible but de-emphasized - Octile Universe: scores exist for reflection, not comparison */
 #best-score {
-  display: none;
+  /* Visible but same styling as current score - de-emphasized equally */
 }
 
 /* Game Container */
@@ -177,6 +180,10 @@ body {
   display: flex;
   gap: 10px;
   margin-top: 20px;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: var(--grid-size);
 }
 
 .btn {
@@ -197,6 +204,44 @@ body {
 
 .btn:active {
   background: #353a40;
+}
+
+.btn.secondary {
+  background: #2a2a2a;
+  color: #999999;
+}
+
+.btn.secondary:hover {
+  background: #3a3a3a;
+}
+
+/* Header buttons (help, about, mute) */
+.header-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.icon-button {
+  width: 40px;
+  height: 40px;
+  background: #3a3a3a;
+  color: #cccccc;
+  border: none;
+  border-radius: 3px;
+  font-size: 20px;
+  cursor: pointer;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-button:hover {
+  background: #4a4a4a;
+}
+
+.icon-button:active {
+  background: #2a2a2a;
 }
 
 /* Modals - Octile Universe: calm, dark, no dramatic effects */
@@ -254,6 +299,93 @@ body {
   gap: 10px;
   margin-top: 30px;
   justify-content: center;
+}
+
+/* Help Modal Specific Styles */
+.help-section {
+  text-align: left;
+  margin: 20px 0;
+}
+
+.help-section h3 {
+  font-size: 18px;
+  color: #cccccc;
+  margin-bottom: 10px;
+}
+
+.help-section p,
+.help-section ul {
+  font-size: 16px;
+  color: #999999;
+  line-height: 1.6;
+}
+
+.help-section ul {
+  padding-left: 20px;
+  margin: 10px 0;
+}
+
+.help-section li {
+  margin: 8px 0;
+}
+
+.help-links {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.help-links a {
+  color: #7986b8;
+  text-decoration: none;
+  font-size: 16px;
+}
+
+.help-links a:hover {
+  text-decoration: underline;
+}
+
+/* About Modal Specific Styles */
+.about-name {
+  font-size: 32px;
+  font-weight: bold;
+  color: #cccccc;
+  margin: 20px 0;
+}
+
+.about-version {
+  font-size: 16px;
+  color: #999999;
+  margin: 10px 0;
+}
+
+.about-byline {
+  font-size: 16px;
+  color: #999999;
+  font-style: italic;
+  margin: 10px 0;
+}
+
+.about-links {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.about-links a {
+  color: #7986b8;
+  text-decoration: none;
+  font-size: 16px;
+}
+
+.about-links a:hover {
+  text-decoration: underline;
+}
+
+.modal-button {
+  margin-top: 20px;
 }
 
 /* Octile cross-promotion */

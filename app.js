@@ -19,15 +19,15 @@ class LocalStorageAdapter {
   }
 }
 
+// Create event bus first (needed by UI)
+const eventBus = new EventBus();
+
 // Create platform components
 const renderer = new WebDOMRenderer();
 const input = new WebDOMInput();
 const audio = new WebDOMAudio();
-const ui = new WebDOMUI();
+const ui = new WebDOMUI(eventBus);
 const platform = new Platform(renderer, input, audio);
-
-// Create event bus
-const eventBus = new EventBus();
 
 // Create storage adapter and game (Fix #1: inject storage)
 const storage = new LocalStorageAdapter();

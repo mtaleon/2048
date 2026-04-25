@@ -20,11 +20,11 @@
     <h1 class="title">2048</h1>
     <div class="scores">
       <div class="score-container">
-        <div class="score-label">Score</div>
+        <div class="score-label" data-i18n="game.score">Score</div>
         <div id="score" class="score">0</div>
       </div>
       <div class="score-container">
-        <div class="score-label">Best</div>
+        <div class="score-label" data-i18n="game.best">Best</div>
         <div id="best-score" class="score">0</div>
       </div>
     </div>
@@ -35,8 +35,13 @@
 
   <!-- Controls -->
   <div class="controls">
-    <button id="new-game-btn" class="btn">New game</button>
-    <button id="mute-btn" class="btn">🔊</button>
+    <button id="new-game-btn" class="btn" data-i18n="game.newGame">New game</button>
+    <div class="header-buttons">
+      <button id="lang-btn" class="icon-button" aria-label="Language" title="切換語言 / Switch Language">🌐</button>
+      <button id="help-btn" class="icon-button" aria-label="Help" data-i18n-aria="ui.help">?</button>
+      <button id="about-btn" class="icon-button" aria-label="About" data-i18n-aria="ui.about">ⓘ</button>
+      <button id="mute-btn" class="icon-button" aria-label="Mute">🔊</button>
+    </div>
   </div>
 
   <!-- Win Modal - Octile Universe: neutral state description, no celebration -->
@@ -65,6 +70,46 @@
         <button class="try-again-btn btn">New game</button>
         <a href="https://play.google.com/store/apps/details?id=com.octile.app" class="octile-btn btn btn-secondary" target="_blank" rel="noopener">Explore Octile</a>
       </div>
+    </div>
+  </div>
+
+  <!-- Help Modal -->
+  <div id="help-modal" class="modal">
+    <div class="modal-content">
+      <h2 data-i18n="help.title">How to Play</h2>
+      <div class="help-section">
+        <h3 data-i18n="help.rule">Rule</h3>
+        <p data-i18n="help.ruleDesc">Use arrow keys to slide tiles. When two tiles with the same number touch, they merge into one. Reach 2048 to win!</p>
+      </div>
+      <div class="help-section">
+        <h3 data-i18n="help.controls">Controls</h3>
+        <ul>
+          <li data-i18n="help.keyboard">Keyboard: Arrow keys or WASD</li>
+          <li data-i18n="help.touch">Touch: Swipe in any direction</li>
+          <li data-i18n="help.newGameTip">New Game: Click button to restart</li>
+        </ul>
+      </div>
+      <div class="help-links">
+        <a href="mailto:octileapp@googlegroups.com" data-i18n="help.contact">Contact</a>
+        <a href="privacy.html" target="_blank" data-i18n="help.privacy">Privacy Policy</a>
+      </div>
+      <button id="help-close" class="modal-button btn" data-i18n="help.done">Done</button>
+    </div>
+  </div>
+
+  <!-- About Modal -->
+  <div id="about-modal" class="modal">
+    <div class="modal-content">
+      <h2 data-i18n="about.title">About</h2>
+      <p class="about-name" data-i18n="about.name">2048</p>
+      <p class="about-version" id="about-version" data-i18n="about.version">Version {version}</p>
+      <p class="about-byline" data-i18n="about.byOctile">An Octile Universe game</p>
+      <div class="about-links">
+        <a href="mailto:octileapp@googlegroups.com" data-i18n="about.contactLink">Contact</a>
+        <a href="privacy.html" target="_blank" data-i18n="about.privacyLink">Privacy Policy</a>
+      </div>
+      <button id="reset-analytics-btn" class="modal-button btn secondary" data-i18n="about.resetAnalytics">Reset Analytics ID</button>
+      <button id="about-close" class="modal-button btn" data-i18n="about.done">Done</button>
     </div>
   </div>
 
