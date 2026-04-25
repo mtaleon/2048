@@ -4,4 +4,8 @@
     <string name="title_activity_main">2048</string>
     <string name="package_name">com.octile.twentyfortyeight</string>
     <string name="custom_url_scheme">com.octile.twentyfortyeight</string>
+
+    <!-- AdMob App ID - REPLACE with your actual ID from AdMob console before release -->
+    <!-- Test ID format: ca-app-pub-3940256099942544~3347511713 -->
+    <string name="admob_app_id">ca-app-pub-3940256099942544~3347511713</string>
 </resources>
