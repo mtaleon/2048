@@ -124,6 +124,10 @@ Pure JavaScript with **zero DOM/UI dependencies**. Can run in any JavaScript env
 
 - **`constants.js`**: Game configuration, tile colors, animation timing, SeededRandom class, **sleep helper for async timing**
 - **`events.js`**: Simple event bus for decoupling core from platform (pub-sub pattern)
+  * Location: `core/events.js` (verified v1.0)
+  * Core events: `game:started`, `tiles:moved`, `tile:spawned`, `game:won`, `game:lost`, `move:invalid`
+  * v1.0 modal events: `modal:opened`, `modal:closed` (for AdMob banner hide/show)
+  * Contract: See implementation plan section 1.2 for required event payload formats
 - **`tile.js`**: Tile data structure with prevX/prevY for animation support, createTile factory
 - **`board.js`**: 4×4 grid management, movement algorithm, merge detection, win/lose conditions
 - **`game.js`**: Game lifecycle orchestration, score tracking, storage adapter pattern, async move()
