@@ -7,6 +7,7 @@ export class WebDOMUI {
     this.audio = null;
     this.newGameCallback = null;
     this.continueCallback = null;
+    this.octileNudgeShown = false;
   }
 
   initialize() {
@@ -110,9 +111,15 @@ export class WebDOMUI {
 
     const scoreEl = modal.querySelector('.final-score');
     const movesEl = modal.querySelector('.final-moves');
+    const nudgeEl = modal.querySelector('.octile-nudge');
 
     if (scoreEl) scoreEl.textContent = score;
     if (movesEl) movesEl.textContent = moves;
+
+    if (nudgeEl) {
+      nudgeEl.style.display = this.octileNudgeShown ? 'none' : 'block';
+      this.octileNudgeShown = true;
+    }
 
     modal.classList.add('show');
     window.dispatchEvent(new CustomEvent('modalShown'));
