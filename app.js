@@ -8,8 +8,12 @@ import { WebDOMInput } from './platforms/web-dom/input.js';
 import { WebDOMAudio } from './platforms/web-dom/audio.js';
 import { WebDOMUI } from './platforms/web-dom/ui.js';
 
-// 0. Import Capacitor for platform detection
-import { Capacitor } from '@capacitor/core';
+// 0. Capacitor polyfill for web mode
+// In web mode, Capacitor is not available, so provide a minimal polyfill
+const Capacitor = window.Capacitor || {
+  isNativePlatform: () => false,
+  getPlatform: () => 'web'
+};
 
 // 0a. Define Android-only detection (⚠️ CRITICAL FIX #22)
 // Must use both checks to exclude iOS
@@ -98,9 +102,9 @@ async function bootstrap() {
   const game = new Game(eventBus, 4, storage);
 
   // 1. Initialize i18n (always)
-  const { applyLanguage } = await import('./core/i18n.js');
-  const savedLang = localStorage.getItem('2048-language') || 'en';
-  applyLanguage(savedLang);
+  const { applyLanguage, getInitialLanguage } = await import('./core/i18n.js');
+  const initialLang = getInitialLanguage();
+  applyLanguage(initialLang);
 
   // 2. Initialize AdMob (Android only)
   if (config.features.admob && isAndroidNative) {
@@ -248,6 +252,9 @@ async function bootstrap() {
   // Wire up UI controls
   ui.onNewGame(() => game.start());
   ui.onContinue(() => game.continuePlaying());
+
+  // Update best score display on initial load (before game starts)
+  renderer.updateScore(0, game.bestScore);
 
   // 5. Start game
   game.start();

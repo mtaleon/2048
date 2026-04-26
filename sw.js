@@ -1,12 +1,15 @@
 'use strict';
 
 // Fix #5: Service Worker with skipWaiting() and clients.claim() for proper updates
-const CACHE_NAME = '2048-v1';  // Version this for updates
+const CACHE_NAME = '2048-v5';  // Version this for updates
 
 const STATIC_ASSETS = [
   './',
   'index.html',
   'app.js',
+  'config.json',
+  'version.json',
+  'privacy.html',
   'favicon.svg',
   'icon-192.png',
   'icon-512.png',
@@ -16,6 +19,7 @@ const STATIC_ASSETS = [
   'core/tile.js',
   'core/board.js',
   'core/game.js',
+  'core/i18n.js',
   'platform/platform.js',
   'platform/IRenderer.js',
   'platform/IInput.js',

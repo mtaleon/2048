@@ -114,6 +114,12 @@ export class WebDOMUI {
       });
     }
 
+    // Language button
+    const langBtn = document.getElementById('lang-btn');
+    if (langBtn) {
+      langBtn.addEventListener('click', () => this.toggleLanguage());
+    }
+
     // Help button
     const helpBtn = document.getElementById('help-btn');
     if (helpBtn) {
@@ -316,6 +322,22 @@ export class WebDOMUI {
         .forEach(key => localStorage.removeItem(key));
 
       alert('Analytics data cleared. A new anonymous ID will be generated on next game completion.');
+    }
+  }
+
+  /**
+   * Toggle language between en and zh
+   */
+  async toggleLanguage() {
+    const currentLang = localStorage.getItem('2048-language') || 'en';
+    const newLang = currentLang === 'en' ? 'zh' : 'en';
+
+    try {
+      const { applyLanguage } = await import('../../core/i18n.js');
+      applyLanguage(newLang);
+      localStorage.setItem('2048-language', newLang);
+    } catch (e) {
+      console.error('Failed to switch language:', e);
     }
   }
 }

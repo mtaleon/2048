@@ -143,6 +143,39 @@ export function applyLanguage(lang) {
   });
 }
 
-// Initialize language from localStorage on load
-const savedLang = localStorage.getItem('2048-language') || 'en';
-setLanguage(savedLang);
+/**
+ * Detect system locale and return 'zh' or 'en'
+ */
+export function detectSystemLocale() {
+  const browserLang = navigator.language || navigator.userLanguage || 'en';
+
+  // Check if system locale starts with 'zh' (zh-TW, zh-CN, zh-HK, etc.)
+  if (browserLang.toLowerCase().startsWith('zh')) {
+    return 'zh';
+  }
+
+  return 'en';
+}
+
+/**
+ * Get initial language: localStorage → system locale → 'en'
+ */
+export function getInitialLanguage() {
+  // 1. Check localStorage first
+  const savedLang = localStorage.getItem('2048-language');
+  if (savedLang && translations[savedLang]) {
+    return savedLang;
+  }
+
+  // 2. Detect system locale
+  const systemLang = detectSystemLocale();
+
+  // 3. Save detected locale to localStorage for future visits
+  localStorage.setItem('2048-language', systemLang);
+
+  return systemLang;
+}
+
+// Initialize language from localStorage or system locale
+const initialLang = getInitialLanguage();
+setLanguage(initialLang);
