@@ -102,7 +102,9 @@ public class MainActivity extends BridgeActivity {
         });
     }
 
-    @Override
+    // Note: In Capacitor 8.x, getStartUrl() is not overridable
+    // This method is kept for potential future use but won't be called by the framework
+    // TODO: Implement OTA loading using Capacitor 8.x's recommended approach
     public String getStartUrl() {
         SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         return getWebLoadUrl(prefs);
