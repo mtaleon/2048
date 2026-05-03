@@ -1,7 +1,7 @@
 import { getBrowserUUID, captureCookieUUID, generateSubmissionID } from './uuid.js';
 
 let API_URL = 'https://api.octile.eu.cc';
-let SCORE_URL = API_URL + '/2048/score';
+let SCORE_URL = API_URL + '/scores';  // Unified endpoint
 let _scoreEnabled = true;
 
 const QUEUE_KEY = '2048_score_queue_v1';
@@ -15,7 +15,7 @@ const RETRY_DELAY_MS = 35000; // Initial retry delay from config
 export function applyConfig(config) {
   if (config.workerUrl) {
     API_URL = config.workerUrl;
-    SCORE_URL = API_URL + '/2048/score';
+    SCORE_URL = API_URL + '/scores';  // Unified endpoint
   }
   if (config.features?.score_submission === false) {
     _scoreEnabled = false;
@@ -25,7 +25,7 @@ export function applyConfig(config) {
 /**
  * Submit score entry (online immediately, or queue if offline)
  *
- * Entry format:
+ * Entry format (transformed to unified format internally):
  * {
  *   final_score: number,
  *   max_tile: number,
@@ -40,28 +40,35 @@ export function applyConfig(config) {
 export async function submitScore(entry) {
   if (!_scoreEnabled) return;
 
-  // Add submission_id if not present
-  if (!entry.submission_id) {
-    entry.submission_id = generateSubmissionID();
-  }
-
-  // Ensure browser_uuid is present
-  if (!entry.browser_uuid) {
-    entry.browser_uuid = getBrowserUUID();
-  }
+  // Transform to unified format
+  const payload = {
+    game_id: '2048',
+    browser_uuid: entry.browser_uuid || getBrowserUUID(),
+    submission_id: entry.submission_id || generateSubmissionID(),
+    score_value: entry.final_score,  // Primary metric (final score)
+    time_seconds: entry.time_seconds,
+    platform: entry.platform || 'web',
+    ota_version: entry.ota_version_code || null,
+    game_data: {
+      final_score: entry.final_score,
+      max_tile: entry.max_tile,
+      moves: entry.moves,
+    },
+    client_timestamp: entry.timestamp_utc || new Date().toISOString(),
+  };
 
   // If offline, queue immediately
   if (!navigator.onLine) {
-    _queueScore(entry);
+    _queueScore(payload);
     return;
   }
 
   // Try to send immediately
   try {
-    await _sendScore(entry);
+    await _sendScore(payload);
   } catch (e) {
     console.warn('Score submission failed, queuing:', e.message);
-    _queueScore(entry);
+    _queueScore(payload);
   }
 }
 
@@ -69,7 +76,7 @@ export async function submitScore(entry) {
  * Send score to backend API
  * @private
  */
-async function _sendScore(entry) {
+async function _sendScore(payload) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
 
@@ -78,9 +85,10 @@ async function _sendScore(entry) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'User-Agent': '2048-Android/1.0 (Octile)',
+        'X-Player-UUID': payload.browser_uuid,
       },
-      body: JSON.stringify(entry),
+      credentials: 'include',  // CRITICAL: Send cookies to worker for UUID
+      body: JSON.stringify(payload),
       signal: controller.signal,
     });
 
@@ -108,10 +116,10 @@ async function _sendScore(entry) {
  * Add score entry to offline queue
  * @private
  */
-function _queueScore(entry) {
+function _queueScore(payload) {
   try {
     const queue = JSON.parse(localStorage.getItem(QUEUE_KEY) || '[]');
-    queue.push(entry);
+    queue.push(payload);
 
     // Cap queue size to prevent unbounded growth
     while (queue.length > MAX_QUEUE) {
