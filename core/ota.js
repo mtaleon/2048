@@ -1,266 +1,101 @@
-// OTA RULE: Download in background, apply ONLY on app restart.
-// No hot-swap during active session. Updates take effect on next app launch.
-
 /**
  * OTA (Over-The-Air) Update System for 2048
+ * Simplified to match Octile's pattern
  *
- * Android-only feature for rapid updates without Play Store delays
- * - Background version check 3 seconds after app startup
- * - Downloads happen in background
- * - Updates apply only on app restart (never mid-session)
- * - Hash verification for integrity
- * - Graceful fallback to bundled assets on failure
+ * - Only checks for updates on native apps (file:// protocol)
+ * - Fetches version.json from site URL
+ * - Shows update banner with force update support
+ * - Native Android downloads in background via AndroidOTA interface
  */
 
-let config = {
-  siteUrl: 'https://2048.octile.eu.cc/',
-  enabled: true
-};
+let SITE_URL = 'https://2048.octile.eu.cc/';
+const APP_VERSION_CODE = 1; // Match version.json otaVersionCode
 
 /**
  * Apply configuration from config.json
  */
-export function applyOtaConfig(cfg) {
-  if (cfg.siteUrl) {
-    config.siteUrl = cfg.siteUrl;
-  }
-  if (cfg.features?.ota_updates === false) {
-    config.enabled = false;
+export function applyOtaConfig(config) {
+  if (config.siteUrl) {
+    SITE_URL = config.siteUrl;
   }
 }
 
 /**
- * Check for OTA updates (called 3 seconds after app startup)
- * Fetches version.json and compares with current version
- * Shows banner if update available
+ * Check for updates (called 3 seconds after app startup)
+ * Only runs on native apps (file:// protocol)
  */
-export async function checkForUpdate() {
-  if (!config.enabled) return;
+export function checkForUpdate() {
+  // Only check for updates in native app context (file:// protocol).
+  // On the web (https://), the page itself IS the latest version.
+  if (location.protocol !== 'file:') return;
 
-  try {
-    const versionUrl = config.siteUrl + 'version.json?t=' + Date.now();
-    const response = await fetch(versionUrl, {
-      method: 'GET',
-      cache: 'no-store'
+  fetch(SITE_URL + 'version.json?t=' + Date.now())
+    .then(r => r.ok ? r.json() : null)
+    .catch(() => null)
+    .then(data => {
+      if (!data) return;
+
+      // --- Force update check (non-dismissible blocker) ---
+      const minVer = data.minAndroidVersionCode || 0;
+      if (minVer > APP_VERSION_CODE) {
+        const url = data.playStoreUrl || '';
+        document.getElementById('update-text').textContent = 'Update required to continue';
+        document.getElementById('update-btn').textContent = 'Update';
+        document.getElementById('update-btn').onclick = () => { if (url) window.open(url, '_blank'); };
+        document.getElementById('update-dismiss').style.display = 'none';
+        document.getElementById('update-banner').classList.add('show', 'force');
+        // Block back button dismiss
+        document.getElementById('update-banner').onclick = function(e) { e.stopPropagation(); };
+        return; // Don't show normal banner on top of force update
+      }
+
+      // --- Normal update banner (dismissible) ---
+      const remoteVersion = data.otaVersionCode || 0;
+      if (remoteVersion <= APP_VERSION_CODE) return;
+
+      const dismissedKey = 'update_dismissed_v' + remoteVersion;
+      if (localStorage.getItem(dismissedKey)) return;
+
+      const notes = data.releaseNotes?.en || 'A new version is available';
+      document.getElementById('update-text').textContent = 'Update available — ' + notes;
+      document.getElementById('update-btn').textContent = 'Learn More';
+      document.getElementById('update-dismiss').textContent = 'Later';
+      document.getElementById('update-dismiss').style.display = '';
+
+      const url = data.playStoreUrl || '';
+      document.getElementById('update-btn').onclick = () => { if (url) window.open(url, '_blank'); };
+      document.getElementById('update-dismiss').onclick = () => {
+        document.getElementById('update-banner').classList.remove('show');
+        localStorage.setItem(dismissedKey, '1');
+      };
+
+      document.getElementById('update-banner').classList.add('show');
+
+      // Notify Android to download OTA in background
+      if (typeof window.AndroidOTA !== 'undefined' && data.bundleUrl) {
+        window.AndroidOTA.downloadUpdate(
+          data.bundleUrl,
+          data.bundleHash || '',
+          remoteVersion,
+          data.otaVersionName || String(remoteVersion)
+        );
+      }
     });
-
-    if (!response.ok) {
-      console.warn('OTA version check failed:', response.status);
-      return;
-    }
-
-    const versionData = await response.json();
-    const remoteVersion = versionData.otaVersionCode || 0;
-    const currentVersion = window.otaVersion || 0;
-
-    if (remoteVersion <= currentVersion) {
-      console.log('OTA: Up to date (current=' + currentVersion + ', remote=' + remoteVersion + ')');
-      return;
-    }
-
-    // New version available - check if user dismissed this version
-    const dismissedKey = 'update_dismissed_v' + remoteVersion;
-    if (localStorage.getItem(dismissedKey) === 'true') {
-      console.log('OTA: Update v' + remoteVersion + ' dismissed by user');
-      return;
-    }
-
-    // Show update banner
-    showUpdateBanner(versionData, false);
-
-    // Notify MainActivity to download in background (Android only)
-    if (typeof window.AndroidOTA !== 'undefined') {
-      window.AndroidOTA.downloadUpdate(
-        versionData.bundleUrl,
-        versionData.bundleHash,
-        remoteVersion,
-        versionData.otaVersionName || String(remoteVersion)
-      );
-    }
-  } catch (error) {
-    console.warn('OTA check failed:', error.message);
-  }
 }
 
 /**
- * Called by MainActivity after OTA download completes
+ * Called by Android after OTA download completes
  * Shows "Restart to apply" banner
- * window.onOtaUpdateReady is called via evaluateJavascript from Java
  */
 window.onOtaUpdateReady = function(versionCode, versionName) {
-  console.log('OTA update ready:', versionCode, versionName);
-
-  const versionData = {
-    otaVersionCode: versionCode,
-    otaVersionName: versionName || String(versionCode)
-  };
-
-  showOtaReadyBanner(versionData);
-};
-
-/**
- * Show update banner (update available, not yet downloaded)
- */
-function showUpdateBanner(versionData, isForceUpdate) {
-  const banner = createBanner(
-    isForceUpdate,
-    getUpdateMessage(versionData),
-    [
-      {
-        text: 'Later',
-        action: () => {
-          dismissUpdate(versionData.otaVersionCode);
-          hideBanner();
-        },
-        visible: !isForceUpdate
-      },
-      {
-        text: 'Learn More',
-        action: () => {
-          window.open(versionData.playStoreUrl || 'https://2048.octile.eu.cc/', '_blank');
-        },
-        visible: true
-      }
-    ]
-  );
-
-  document.body.appendChild(banner);
-}
-
-/**
- * Show OTA ready banner (download complete, restart to apply)
- */
-function showOtaReadyBanner(versionData) {
-  const banner = createBanner(
-    false, // not force
-    'Update ready. Restart to apply.',
-    [
-      {
-        text: 'Restart',
-        action: () => {
-          // Reload the app (on Android, this will load from OTA directory)
-          window.location.reload();
-        },
-        visible: true
-      }
-    ]
-  );
-
-  document.body.appendChild(banner);
-}
-
-/**
- * Get update message text
- */
-function getUpdateMessage(versionData) {
-  const releaseNotes = versionData.releaseNotes?.en || 'A new version is available';
-  return 'Update available: ' + releaseNotes;
-}
-
-/**
- * Create update banner element
- */
-function createBanner(isForceUpdate, message, buttons) {
-  const existingBanner = document.getElementById('update-banner');
-  if (existingBanner) {
-    existingBanner.remove();
-  }
-
-  const banner = document.createElement('div');
-  banner.id = 'update-banner';
-  banner.className = 'update-banner' + (isForceUpdate ? ' force-update' : '');
-
-  const messageEl = document.createElement('p');
-  messageEl.className = 'update-message';
-  messageEl.textContent = message;
-  banner.appendChild(messageEl);
-
-  const actions = document.createElement('div');
-  actions.className = 'update-actions';
-
-  buttons.forEach(btn => {
-    if (!btn.visible) return;
-
-    const button = document.createElement('button');
-    button.className = 'update-btn';
-    button.textContent = btn.text;
-    button.addEventListener('click', btn.action);
-    actions.appendChild(button);
-  });
-
-  banner.appendChild(actions);
-
-  // Add styles dynamically (in case styles.css doesn't have them)
-  addBannerStyles();
-
-  return banner;
-}
-
-/**
- * Add banner styles dynamically
- */
-function addBannerStyles() {
-  if (document.getElementById('ota-banner-styles')) return;
-
-  const style = document.createElement('style');
-  style.id = 'ota-banner-styles';
-  style.textContent = `
-    .update-banner {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      background: #3a3a3a;
-      color: #cccccc;
-      padding: 12px 16px;
-      z-index: 9999;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-    }
-    .update-banner.force-update {
-      background: #b85c00;
-    }
-    .update-message {
-      margin: 0;
-      font-size: 14px;
-      flex: 1;
-    }
-    .update-actions {
-      display: flex;
-      gap: 8px;
-    }
-    .update-btn {
-      padding: 6px 12px;
-      background: #4a4a4a;
-      color: #cccccc;
-      border: none;
-      border-radius: 3px;
-      font-size: 14px;
-      cursor: pointer;
-    }
-    .update-btn:hover {
-      background: #5a5a5a;
-    }
-  `;
-  document.head.appendChild(style);
-}
-
-/**
- * Dismiss update banner for specific version
- */
-function dismissUpdate(versionCode) {
-  const dismissedKey = 'update_dismissed_v' + versionCode;
-  localStorage.setItem(dismissedKey, 'true');
-}
-
-/**
- * Hide update banner
- */
-function hideBanner() {
   const banner = document.getElementById('update-banner');
-  if (banner) {
-    banner.remove();
-  }
-}
+  document.getElementById('update-text').textContent = 'Update ready — restart to apply';
+  document.getElementById('update-btn').textContent = 'Restart';
+  document.getElementById('update-btn').onclick = function() { location.reload(); };
+  document.getElementById('update-dismiss').textContent = 'Later';
+  document.getElementById('update-dismiss').style.display = '';
+  document.getElementById('update-dismiss').onclick = function() {
+    banner.classList.remove('show');
+  };
+  banner.classList.add('show');
+};
