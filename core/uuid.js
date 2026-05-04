@@ -1,4 +1,5 @@
 const COOKIE_KEY = 'octile_cookie_uuid';
+const BROWSER_KEY = 'octile_browser_uuid';
 
 /**
  * Generate a UUID v4
@@ -13,26 +14,34 @@ function generateUUID() {
 }
 
 /**
- * Get or generate browser UUID for anonymous analytics
- * Stored in localStorage for persistence across sessions
+ * Get browser UUID for player identification
+ * Prefers server-issued cookie UUID, falls back to client-generated UUID
+ * Matches Octile's UUID strategy
  */
 export function getBrowserUUID() {
+  // Prefer Worker-issued cookie UUID (set via X-Cookie-UUID response header)
   let uuid = localStorage.getItem(COOKIE_KEY);
+  if (uuid) return uuid;
+
+  // Fallback to legacy client-generated UUID
+  uuid = localStorage.getItem(BROWSER_KEY);
   if (!uuid) {
     uuid = generateUUID();
-    localStorage.setItem(COOKIE_KEY, uuid);
+    localStorage.setItem(BROWSER_KEY, uuid);
   }
   return uuid;
 }
 
 /**
  * Capture server-issued UUID from response header
- * If server provides X-Cookie-UUID, save it for future requests
+ * Only saves if no UUID exists yet (prevents overwrite on subsequent requests)
+ * Matches Octile's capture strategy
  */
 export function captureCookieUUID(response) {
   if (!response?.headers) return;
   const cookieUUID = response.headers.get('X-Cookie-UUID');
-  if (cookieUUID) {
+  // Only set if we don't have ANY UUID yet (prevents localStorage overwrite)
+  if (cookieUUID && !localStorage.getItem(COOKIE_KEY) && !localStorage.getItem(BROWSER_KEY)) {
     localStorage.setItem(COOKIE_KEY, cookieUUID);
   }
 }
