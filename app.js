@@ -125,9 +125,19 @@ async function bootstrap() {
     try {
       const api = await import('./core/api.js');
       const { getBrowserUUID } = await import('./core/uuid.js');
+      const health = await import('./core/health.js');
 
       api.applyConfig(config);
+      health.applyConfig(config);
       submitScore = api.submitScore;
+
+      // Check backend health on startup
+      health.refreshBackendStatus().then(ok => {
+        console.log('Backend health check:', ok ? 'online' : 'offline');
+      });
+
+      // Start periodic health polling (every 10 minutes)
+      health.startHealthPoll();
 
       // Flush queue on network reconnection
       window.addEventListener('online', api.flushQueue);
