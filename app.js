@@ -1,6 +1,7 @@
 import { Game } from './core/game.js';
 import { EventBus } from './core/events.js';
 import { DIRECTIONS } from './core/constants.js';
+import { submitScore } from './core/api.js';
 
 import { Platform } from './platform/platform.js';
 import { WebDOMRenderer } from './platforms/web-dom/renderer.js';
@@ -119,9 +120,10 @@ async function bootstrap() {
     }
   }
 
-  // 3. Score submission (Android only)
+  // 3. Score submission (all platforms)
   let submitScore; // Declare for use in event handlers
-  if (config.features.score_submission && isAndroidNative) {
+
+  if (config.features.score_submission) {
     try {
       const api = await import('./core/api.js');
       const { getBrowserUUID } = await import('./core/uuid.js');
@@ -216,15 +218,13 @@ async function bootstrap() {
       }
     }
 
-    // Submit score (Android only) ⚠️ TRIPLE GUARD REQUIRED
+    // Submit score (all platforms) ⚠️ DOUBLE GUARD REQUIRED
     // 1. Config flag enabled
-    // 2. Android platform only (not iOS, not Web)
-    // 3. Function exists (defensive check)
-    if (
-      window.config?.features?.score_submission &&
-      isAndroidNative &&
-      typeof submitScore === 'function'
-    ) {
+    // 2. Function exists (defensive check)
+    const allowScoreSubmit = window.config?.features?.score_submission &&
+      typeof submitScore === 'function';
+
+    if (allowScoreSubmit) {
       try {
         const { getBrowserUUID } = await import('./core/uuid.js');
         submitScore({
