@@ -7,6 +7,7 @@
   },
   "workerUrl": "https://api.octile.eu.cc",
   "siteUrl": "https://2048.octile.eu.cc/",
+  "supportEmail": "octileapp+2048@googlegroups.com",
   "scoreQueueRetryMs": 35000,
-  "debug": false
+  "debug": true
 }
