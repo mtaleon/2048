@@ -221,6 +221,15 @@ export class Board {
   }
 
   /**
+   * Get the highest tile value on the board
+   * @returns {number}
+   */
+  getMaxTile() {
+    if (this.tiles.length === 0) return 0;
+    return Math.max(...this.tiles.map(tile => tile.value));
+  }
+
+  /**
    * Get tile at position, or null if empty/out of bounds
    * @param {number} x
    * @param {number} y
