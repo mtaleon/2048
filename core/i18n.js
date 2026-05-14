@@ -30,7 +30,7 @@ const translations = {
     'about.byOctile': 'An Octile Universe game',
     'about.contactLink': 'Contact',
     'about.privacyLink': 'Privacy Policy',
-    'about.resetAnalytics': 'Reset Analytics ID',
+    'about.clearData': 'Clear My Data',
     'about.done': 'Done',
 
     // OTA updates
@@ -79,7 +79,7 @@ const translations = {
     'about.byOctile': 'Octile Universe 出品',
     'about.contactLink': '聯絡我們',
     'about.privacyLink': '隱私權政策',
-    'about.resetAnalytics': '重置分析識別碼',
+    'about.clearData': '清除我的資料',
     'about.done': '完成',
 
     // OTA updates

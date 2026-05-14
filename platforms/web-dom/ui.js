@@ -305,11 +305,14 @@ export class WebDOMUI {
   }
 
   /**
-   * Reset analytics ID (clears UUID and score queue)
+   * Clear user data (UUID, score queue, dismissed prompts)
    */
   resetAnalytics() {
+    const lang = localStorage.getItem('2048-language') || 'en';
     const confirmed = confirm(
-      'This will reset your anonymous analytics identifier and clear queued data. Continue?'
+      lang === 'zh'
+        ? '這將清除您的本地遊戲記錄與識別碼。繼續？'
+        : 'This will clear your local game history and identifier. Continue?'
     );
 
     if (confirmed) {
@@ -321,7 +324,11 @@ export class WebDOMUI {
         .filter(key => key.startsWith('update_dismissed_v'))
         .forEach(key => localStorage.removeItem(key));
 
-      alert('Analytics data cleared. A new anonymous ID will be generated on next game completion.');
+      alert(
+        lang === 'zh'
+          ? '資料已清除。下次完成遊戲時將產生新的識別碼。'
+          : 'Data cleared. A new identifier will be generated on next game completion.'
+      );
     }
   }
 
