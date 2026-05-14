@@ -52,9 +52,8 @@ async function loadConfig() {
   }
 
   // Runtime platform override to match Feature Matrix semantics
-  // Web/PWA: core-only, no analytics/OTA/ads
+  // Web/PWA: disable OTA/ads only (score submission enabled)
   if (!isAndroidNative) {
-    config.features.score_submission = false;
     config.features.ota_updates = false;
     config.features.admob = false;
     config.features.interstitial_ads = false;
