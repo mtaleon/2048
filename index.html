@@ -125,14 +125,16 @@
   <!-- Passive Octile cross-promotion -->
   <div class="footer-link">A calm puzzle universe · <a href="https://play.google.com/store/apps/details?id=com.octile.app" target="_blank" rel="noopener">Octile</a></div>
 
-  <!-- Load Capacitor for Android (fails gracefully on web) -->
+  <!-- Load Capacitor for Android (silent on web) -->
   <script>
-    const capacitorScript = document.createElement('script');
-    capacitorScript.src = 'capacitor.js';
-    capacitorScript.onerror = () => {
-      console.log('Running in Web mode');
-    };
-    document.head.appendChild(capacitorScript);
+    // Check if Capacitor exists (injected by native wrapper)
+    if (typeof Capacitor === 'undefined') {
+      // Create polyfill for web mode (no 404 request)
+      window.Capacitor = {
+        isNativePlatform: () => false,
+        getPlatform: () => 'web'
+      };
+    }
   </script>
 
   <!-- Load game -->
